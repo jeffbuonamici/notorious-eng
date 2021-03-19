@@ -1,4 +1,4 @@
-package UnitTests;
+package UnitTests.external;
 
 import app.item.AssetType;
 import external.AssetTypeDAOImpl;
