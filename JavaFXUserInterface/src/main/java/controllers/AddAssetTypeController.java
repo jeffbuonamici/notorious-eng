@@ -47,8 +47,6 @@ public class AddAssetTypeController implements Initializable {
     @FXML
     private AnchorPane inputError;
     @FXML
-    private AnchorPane addAssetType;
-    @FXML
     private AnchorPane root;
     private UIUtilities uiUtilities;
     private AssetTypeDAOImpl db;
@@ -86,7 +84,7 @@ public class AddAssetTypeController implements Initializable {
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, cancelBtn.getScene()));
         saveBtn.setOnMouseClicked(mouseEvent -> {
             ProgressIndicator pi= new ProgressIndicator();
-            addAssetType.getChildren().add(pi);
+            root.getChildren().add(pi);
             AddAssetTypeService addAssetTypeService=new AddAssetTypeService();
             addAssetTypeService.setAssetType(assembleAssetType());
             pi.visibleProperty().bind(addAssetTypeService.runningProperty());

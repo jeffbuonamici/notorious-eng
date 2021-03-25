@@ -60,8 +60,6 @@ public class AddAssetController implements Initializable {
     @FXML
     private AnchorPane inputError;
     @FXML
-    private AnchorPane addAssetPane;
-    @FXML
     private AnchorPane root;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
@@ -104,7 +102,7 @@ public class AddAssetController implements Initializable {
             AddAssetService addAssetService= new AddAssetService();
             addAssetService.setAsset(newAsset);
             ProgressIndicator pi = new ProgressIndicator();
-            addAssetPane.getChildren().add(pi);
+            root.getChildren().add(pi);
             pi.visibleProperty().bind(addAssetService.runningProperty());
             if (formInputValidation() && !isAssetEmpty(newAsset)) {
                 addAssetService.start();

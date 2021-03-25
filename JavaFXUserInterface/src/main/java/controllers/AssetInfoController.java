@@ -55,8 +55,6 @@ public class AssetInfoController implements Initializable {
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
     static Logger logger = LoggerFactory.getLogger(AssetInfoController.class);
     @FXML
-    AnchorPane assetPane;
-    @FXML
     private Button deleteBtn;
     @FXML
     private Button archiveBtn;
@@ -234,7 +232,7 @@ public class AssetInfoController implements Initializable {
             DeleteAssetService deleteAssetService= new DeleteAssetService();
             deleteAssetService.setAssetID(asset.getId());
             ProgressIndicator pi= new ProgressIndicator();
-            assetPane.getChildren().add(pi);
+            root.getChildren().add(pi);
             pi.visibleProperty().bind(deleteAssetService.runningProperty());
             deleteAssetService.start();
         });
