@@ -4,7 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane fx:id="root" prefHeight="834.0" prefWidth="58.0" styleClass="nav" stylesheets="@css/revamp/navigation.css"
+<AnchorPane prefHeight="834.0" prefWidth="58.0" styleClass="nav" stylesheets="@css/revamp/navigation.css"
             xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.NavigationController">
     <children>

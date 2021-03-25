@@ -93,7 +93,7 @@ public class AssetsController implements Initializable {
         table = new TableView<>();
 
         try {
-            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0, 40));
         } catch (Exception e) {
             logger.error("Exception: ", e);
         }
