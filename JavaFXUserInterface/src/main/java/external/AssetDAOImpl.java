@@ -26,6 +26,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_LIVE_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = false AND a.asset_type_id = ?";
     private static final String GET_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
+    private static final String GET_Number_Of_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID = "SELECT count(*) as size FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
     private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location) values(?,?,?,?,?,?,?,?)";
     private static final String SET_UPDATED_TRUE = "UPDATE asset set updated = 1 where asset_id = ?";
     private static final String GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID = "SELECT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? GROUP by attribute_id";
@@ -230,6 +231,21 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return assets;
     }
 
+    @Override
+    public int getNumberOfArchivedAssetsFromAssetTypeID(int assetTypeID) {
+        int size=0;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_Number_Of_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID)) {
+            ps.setInt(1, assetTypeID);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    size=rs.getInt("size");
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Exception in getArchivedAssetsFromAssetTypeID(): ", e);
+        }
+        return size;
+    }
     /**
      * This method changes the update indicator of the assert in the database to true
      *

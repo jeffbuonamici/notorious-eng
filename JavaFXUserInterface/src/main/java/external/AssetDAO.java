@@ -33,4 +33,6 @@ public interface AssetDAO {
     void setAssetToBeArchived(int assetID);
 
     void deleteAssetMeasurementsAfterTimeCycle(int assetID, int time);
+
+    int getNumberOfArchivedAssetsFromAssetTypeID(int assetTypeID);
 }

@@ -234,8 +234,7 @@ public class AssetTypeInfoController implements Initializable {
         evaluateButtons.add(evaluateAllModelsBtn);
 
         if (modelTab.getId().equals("modelTab")) {
-            List<Asset> assets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
-            int nbOfAssets = assets.size();
+            int nbOfAssets = assetDAO.getNumberOfArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
             trainSlider.setMax(nbOfAssets);
             trainValue.setText(String.valueOf(trainSlider.getValue()));
             testSlider.setMax(nbOfAssets);
@@ -243,12 +242,12 @@ public class AssetTypeInfoController implements Initializable {
 
             trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
                 trainValue.setText(Integer.toString((int) trainSlider.getValue()));
-                testSlider.setMax(nbOfAssets - trainSlider.getValue());
+                testSlider.setMax(nbOfAssets - (int)trainSlider.getValue());
                 trainSize = (int) trainSlider.getValue();
             });
             testSlider.valueProperty().addListener((observableValue, number, t1) -> {
                 testValue.setText(Integer.toString((int) testSlider.getValue()));
-                trainSlider.setMax(nbOfAssets - testSlider.getValue());
+                trainSlider.setMax(nbOfAssets - (int)testSlider.getValue());
                 testSize = (int) testSlider.getValue();
             });
 
@@ -469,14 +468,17 @@ public class AssetTypeInfoController implements Initializable {
              progressIndicator.setVisible(false);
             progressIndicator.setLayoutX(90);
             progressIndicator.setLayoutY(90);
-             Region region=new Region();
-             region.visibleProperty().bind(progressIndicator.visibleProperty());
-             region.setBackground(new Background(new BackgroundFill(Color.rgb(0,0,0,0.4),
-                     CornerRadii.EMPTY,
-                     Insets.EMPTY)));
-             modelPane.getChildren().add(progressIndicator);
-             modelPane.getChildren().add(region);
-
+//             Region region=new Region();
+//             region.visibleProperty().bind(progressIndicator.visibleProperty());
+////            region.setVisible(true);
+//            region.setStyle("-fix-background-color: rgba(0, 0, 0, 0.4)");
+//             region.setPrefSize(modelPane.getHeight(),modelPane.getWidth());
+             Pane color=new Pane();
+             color.setStyle("-fix-background-color: rgba(0, 0, 0, 0.4)");
+             color.visibleProperty().bind(progressIndicator.visibleProperty());
+             color.getChildren().add(progressIndicator);
+             modelPane.getChildren().add(color);
+//             modelPane.getChildren().addAll(progressIndicator,region);
             modelPane.getStyleClass().add("modelPane");
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
@@ -571,9 +573,12 @@ public class AssetTypeInfoController implements Initializable {
             if(label.equals(model.getModelName())){
                 pane.getChildren()
                         .stream()
+                        .filter(Pane.class::isInstance)
+                        .map(Pane.class::cast)
+                        .findFirst().get().getChildren().stream()
                         .filter(ProgressIndicator.class::isInstance)
                         .map(ProgressIndicator.class::cast)
-                        .findFirst().get().setVisible(visible);
+                        .findFirst().get().setVisible(visible);;
             }
         }
     }
