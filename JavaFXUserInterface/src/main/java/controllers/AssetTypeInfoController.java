@@ -22,23 +22,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rul.models.ModelStrategy;
 import utilities.*;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AssetTypeInfoController implements Initializable {
     private static final String RMSE = "RMSE";
@@ -93,7 +92,12 @@ public class AssetTypeInfoController implements Initializable {
     private Label associatedModelLabel;
     @FXML
     private AnchorPane root;
+    @FXML
+    private AnchorPane typePane;
+    @FXML
+    private ProgressIndicator pi;
     private ObservableList<Model> modelObservableList;
+    private ObservableList<Pane> modelPaneObservableList;
     private int associatedModelID;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
@@ -103,6 +107,7 @@ public class AssetTypeInfoController implements Initializable {
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
     private Pane modelPane;
+//    private ProgressIndicator pi;
 
 
     @Override
@@ -213,6 +218,7 @@ public class AssetTypeInfoController implements Initializable {
     }
 
     private void attachEventsModelTab() {
+
         try {
             modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
         } catch (Exception e) {
@@ -276,20 +282,18 @@ public class AssetTypeInfoController implements Initializable {
      * @param model is the model to be evaluated
      * @author Tala, Jeremie
      */
-    public void saveModelToEvaluate(Model model, MouseEvent mouseEvent) {
+    public void  saveModelToEvaluate(Model model, MouseEvent mouseEvent) {
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-        GetModelStrategyService getModelStrategyService = new GetModelStrategyService();
-        getModelStrategyService.setModelID(model.getModelID());
-        getModelStrategyService.setAssetTypeID(Integer.parseInt(assetType.getId()));
-        getModelStrategyService.setTestAssets(testAssets);
-        getModelStrategyService.setTrainAssets(trainAssets);
-        getModelStrategyService.setMouseEvent(mouseEvent);
-        ProgressIndicator pi = new ProgressIndicator();
-        modelPane.getChildren().add(pi);
-        pi.setVisible(true);
-        pi.visibleProperty().bind(getModelStrategyService.runningProperty());
-        getModelStrategyService.start();
+        ModelStrategy modelStrategy= modelDAO.getModelStrategy(model.getModelID(),Integer.parseInt(assetType.getId()));
+        if(!Objects.isNull(modelStrategy)){
+            modelStrategy.setTrainAssets(trainAssets);
+            modelStrategy.setTestAssets(testAssets);
+            modelDAO.updateModelStrategy(modelStrategy,model.getModelID(),Integer.parseInt(assetType.getId()));}
+        else{
+            CustomDialog.nullModelAlert(mouseEvent);
+        }
+        setindicatorVisibleProperty(true,model);
     }
 
     /**
@@ -456,11 +460,23 @@ public class AssetTypeInfoController implements Initializable {
      * @author Jeremie
      */
     public void generateThumbnails() {
-        ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
+        modelPaneObservableList = FXCollections.observableArrayList();
 
         for (Model model : modelObservableList) {
             // Creating a Thumbnail element
              modelPane= new Pane();
+             ProgressIndicator progressIndicator=new ProgressIndicator();
+             progressIndicator.setVisible(false);
+            progressIndicator.setLayoutX(90);
+            progressIndicator.setLayoutY(90);
+             Region region=new Region();
+             region.visibleProperty().bind(progressIndicator.visibleProperty());
+             region.setBackground(new Background(new BackgroundFill(Color.rgb(0,0,0,0.4),
+                     CornerRadii.EMPTY,
+                     Insets.EMPTY)));
+             modelPane.getChildren().add(progressIndicator);
+             modelPane.getChildren().add(region);
+
             modelPane.getStyleClass().add("modelPane");
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
@@ -512,7 +528,6 @@ public class AssetTypeInfoController implements Initializable {
             modelPane.getChildren().add(rmsePane);
             modelPane.getChildren().add(rmseValue);
             modelPane.getChildren().add(evaluateModelBtn);
-
             modelPaneObservableList.add(modelPane);
         }
         modelPanes.setModelThumbnailsContainerPane(modelPaneObservableList, modelsThumbPane);
@@ -546,6 +561,23 @@ public class AssetTypeInfoController implements Initializable {
         }
     }
 
+    public void setindicatorVisibleProperty(Boolean visible, Model model){
+        for(Pane pane:modelPaneObservableList){
+            String label=pane.getChildren()
+                    .stream()
+                    .filter(Text.class::isInstance)
+                    .map(Text.class::cast)
+                    .findFirst().get().getText();
+            if(label.equals(model.getModelName())){
+                pane.getChildren()
+                        .stream()
+                        .filter(ProgressIndicator.class::isInstance)
+                        .map(ProgressIndicator.class::cast)
+                        .findFirst().get().setVisible(visible);
+            }
+        }
+    }
+
     /**
      * This function continuously updates the RMSE values for the different models that are used for evaluation
      *
@@ -559,7 +591,13 @@ public class AssetTypeInfoController implements Initializable {
         Timeline rmseTimeline = new Timeline(new KeyFrame(Duration.millis(3000), e ->
         {
             for (Model model : modelObservableList) {
-                model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+                String  newRmse=String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId()))));
+                String currentRmse=model.getRMSE().getValue();
+                if(Double.parseDouble(currentRmse)!=Double.parseDouble(newRmse)){
+                        setindicatorVisibleProperty(false, model);
+                }
+//                    pi.setVisible(false);
+                model.setRMSE(newRmse);
             }
         }));
 
