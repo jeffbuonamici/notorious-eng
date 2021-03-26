@@ -37,6 +37,7 @@ import utilities.ProgresIndicator;
 import utilities.TextConstants;
 import utilities.UIUtilities;
 
+import java.awt.desktop.AboutHandler;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
@@ -82,6 +83,8 @@ public class AssetsController implements Initializable {
     private ChoiceBox<String> sortAsset;
     @FXML
     private AnchorPane root;
+
+
 
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
@@ -158,7 +161,7 @@ public class AssetsController implements Initializable {
 
         //Attach link to addAssetButton to go to AddAsset.fxml
         addAssetBtn.setOnMouseClicked(mouseEvent -> {
-            root.getChildren().add(ProgresIndicator.addIndicator(1,2));
+
             uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene());
 
         });
