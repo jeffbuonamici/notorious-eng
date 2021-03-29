@@ -33,7 +33,6 @@ import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
-import utilities.ProgresIndicator;
 import utilities.TextConstants;
 import utilities.UIUtilities;
 
@@ -157,11 +156,7 @@ public class AssetsController implements Initializable {
         });
 
         //Attach link to addAssetButton to go to AddAsset.fxml
-        addAssetBtn.setOnMouseClicked(mouseEvent -> {
-            root.getChildren().add(ProgresIndicator.addIndicator(1,2));
-            uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene());
-
-        });
+        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene()));
 
         sortingSetUp();
     }

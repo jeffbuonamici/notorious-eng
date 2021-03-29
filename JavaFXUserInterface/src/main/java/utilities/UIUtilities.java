@@ -7,11 +7,9 @@
 package utilities;
 
 import app.item.Asset;
-import app.item.Model;
 import controllers.AssetInfoController;
 import controllers.AssetTypeInfoController;
 import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -223,14 +221,6 @@ public class UIUtilities {
      */
     public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Asset asset, Scene scene) {
         AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
-        Timeline rmseTimeline = new Timeline(new KeyFrame(Duration.millis(3000), e ->
-        {
-        }));
-        rootPane.getChildren()
-                .stream()
-                .filter(ProgressIndicator.class::isInstance)
-                .map(ProgressIndicator.class::cast)
-                .findFirst().get().setVisible(false);
         FadeTransition ft = fadeOut(rootPane);
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -285,9 +275,6 @@ public class UIUtilities {
      */
     public void fadeInTransition(AnchorPane rootPane) {
         FadeTransition ft = new FadeTransition();
-//        ProgressIndicator pi=new ProgressIndicator();
-//        rootPane.getChildren().add(pi);
-//        pi.setVisible(true);
         ft.setDuration(Duration.millis(700));
         ft.setNode(rootPane);
         ft.setFromValue(0);
