@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0" prefWidth="1194.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddAssetController">
-    <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
-    <AnchorPane fx:id="root" layoutX="75.0" prefHeight="712.0" prefWidth="951.0" style="-fx-background-color: #F8F8F8;" styleClass="background" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <AnchorPane prefHeight="80.0" prefWidth="1135.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.URL?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0"
+            prefWidth="1194.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AddAssetController">
+    <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+    <AnchorPane fx:id="root" layoutX="75.0" prefHeight="712.0" prefWidth="951.0" style="-fx-background-color: #F8F8F8;"
+                styleClass="background" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane prefHeight="80.0" prefWidth="1135.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0">
             <children>
-                <Button fx:id="backBtn" layoutX="15.0" layoutY="17.0" mnemonicParsing="false" style="-fx-background-color: transparent;" textFill="TRANSPARENT">
+                <Button fx:id="backBtn" layoutX="15.0" layoutY="17.0" mnemonicParsing="false"
+                        style="-fx-background-color: transparent;" textFill="TRANSPARENT">
                     <graphic>
                         <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@imgs/outline_arrow_back_black_36dp.png" />
+                                <Image url="@imgs/outline_arrow_back_black_36dp.png"/>
                             </image>
                         </ImageView>
                     </graphic>
@@ -108,11 +108,6 @@
                 </Button>
             </children>
         </AnchorPane>
-      <AnchorPane fx:id="indicatorPane" disable="true" prefHeight="834.0" prefWidth="1135.0">
-         <children>
-            <ProgressIndicator fx:id="pi" layoutX="500.0" layoutY="400.0" visible="false" />
-         </children>
-      </AnchorPane>
         <stylesheets>
             <URL value="@css/revamp/addAsset.css" />
             <URL value="@css/revamp/style.css" />

@@ -6,7 +6,6 @@
  */
 package utilities;
 
-import BackgroundTasks.ChangeSceneService;
 import app.item.Asset;
 import app.item.Model;
 import controllers.AssetInfoController;
@@ -157,23 +156,15 @@ public class UIUtilities {
      */
     public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Scene scene) {
         AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
-        AnchorPane anchorPane=new AnchorPane();
-        ProgressIndicator pi=new ProgressIndicator();
-        anchorPane.getChildren().add(pi);
-        rootPane.getChildren().add(anchorPane);
         FadeTransition ft = fadeOut(rootPane);
-        ChangeSceneService changeSceneService=new ChangeSceneService();
-        changeSceneService.setFxmlFileName(fxmlFileName);
-        pi.visibleProperty().bind(changeSceneService.runningProperty());
-        changeSceneService.start();
-//        try {
-//            FXMLLoader loader = new FXMLLoader();
-//            loader.setLocation(getClass().getResource(fxmlFileName + FXML));
-//            Parent parent = loader.load();
-//            scene.setRoot(parent);
-//        } catch (IOException e) {
-//            logger.error("Exception in changeScene(): ", e);
-//        }
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource(fxmlFileName + FXML));
+            Parent parent = loader.load();
+            scene.setRoot(parent);
+        } catch (IOException e) {
+            logger.error("Exception in changeScene(): ", e);
+        }
         ft.play();
     }
 

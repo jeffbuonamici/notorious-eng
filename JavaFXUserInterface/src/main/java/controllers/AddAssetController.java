@@ -6,16 +6,12 @@
 package controllers;
 
 import BackgroundTasks.AddAssetService;
-import BackgroundTasks.ChangeSceneService;
-import BackgroundTasks.ChangeSceneTask;
 import app.item.Asset;
 import app.item.AssetType;
 import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -65,10 +61,6 @@ public class AddAssetController implements Initializable {
     private AnchorPane inputError;
     @FXML
     private AnchorPane root;
-    @FXML
-    private AnchorPane indicatorPane;
-    @FXML
-    private ProgressIndicator pi;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
@@ -117,23 +109,8 @@ public class AddAssetController implements Initializable {
                 CustomDialog.addSystemControllerSaveDialog(mouseEvent);
             }
         });
-        backBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-            public void handle(ActionEvent event) {
-                indicatorPane.setDisable(false);
-                pi.setVisible(true);
-            }
-        });
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> {
-
-//            ChangeSceneService changeSceneService=new ChangeSceneService();
-//            changeSceneService.setMouseEvent(mouseEvent);
-//            changeSceneService.setScene(backBtn.getScene());
-//            pi.visibleProperty().bind(changeSceneService.runningProperty());
-//            changeSceneService.start();
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, backBtn.getScene());
-        });
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, backBtn.getScene()));
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, cancelBtn.getScene()));
     }
 
