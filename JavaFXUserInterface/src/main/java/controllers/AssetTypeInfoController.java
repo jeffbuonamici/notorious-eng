@@ -8,7 +8,6 @@
  */
 package controllers;
 
-import BackgroundTasks.GetModelStrategyService;
 import app.item.Asset;
 import app.item.Model;
 import external.AssetDAOImpl;
@@ -22,13 +21,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.slf4j.Logger;
