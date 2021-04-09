@@ -92,6 +92,7 @@ public class AssetsController extends Controller implements Initializable {
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private ObservableList<Asset> searchedAssets;
+    private ObservableList<Asset> sortedAssets;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -307,37 +308,28 @@ public class AssetsController extends Controller implements Initializable {
         //Listener on the sort ChoiceBox. Depending on the sort selected, all systems panes are cleared and generated again
         //with the appropriate sort applied.
         sortAsset.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (!oldValue.equals(newValue)) {
+            if (!search.getText().trim().isEmpty()) {
+                sortedAssets = searchedAssets;
+            }
+            else {
+                sortedAssets = assets;
+            }
+            if (!oldValue.equals(newValue) && !sortedAssets.isEmpty()) {
                 switch (newValue) {
                     case SORT_DEFAULT:
-                        FXCollections.sort(assets, Comparator.comparingInt(Item::getId));
-                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
-                            FXCollections.sort(searchedAssets, Comparator.comparingInt(Item::getId));
-                        }
+                        FXCollections.sort(sortedAssets, Comparator.comparingInt(Item::getId));
                         break;
                     case SORT_RUL_ASC:
-                        FXCollections.sort(assets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
-                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
-                            FXCollections.sort(searchedAssets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
-                        }
+                        FXCollections.sort(sortedAssets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
                         break;
                     case SORT_RUL_DESC:
-                        FXCollections.sort(assets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
-                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
-                            FXCollections.sort(searchedAssets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
-                        }
+                        FXCollections.sort(sortedAssets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
                         break;
                     case SORT_CRITICAL_ASC:
-                        FXCollections.sort(assets, Comparator.comparingInt(Asset::mapCriticality));
-                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
-                            FXCollections.sort(searchedAssets, Comparator.comparingInt(Asset::mapCriticality));
-                        }
+                        FXCollections.sort(sortedAssets, Comparator.comparingInt(Asset::mapCriticality));
                         break;
                     case SORT_CRITICAL_DESC:
-                        FXCollections.sort(assets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
-                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
-                            FXCollections.sort(searchedAssets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
-                        }
+                        FXCollections.sort(sortedAssets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
                         break;
                     default:
                         break;
