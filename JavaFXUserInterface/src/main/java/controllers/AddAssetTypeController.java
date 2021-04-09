@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import static utilities.FormInputValidation.assetTypeFormInputValidation;
 import static utilities.TextConstants.*;
 
 public class AddAssetTypeController extends Controller implements Initializable {
@@ -77,7 +78,7 @@ public class AddAssetTypeController extends Controller implements Initializable 
         // Change scenes to Assets.fxml
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, cancelBtn.getScene()));
         saveBtn.setOnMouseClicked(mouseEvent -> {
-            if (FormInputValidation.assetTypeFormInputValidation(addAssetTypeInformationAnchorPane, assetTypeName, assetTypeDescription, thresholdAdvisoryValue, thresholdCautionValue, thresholdWarningValue, thresholdFailedValue) && saveAssetType(assembleAssetType())) {
+            if (assetTypeFormInputValidation(addAssetTypeInformationAnchorPane, assetTypeName, assetTypeDescription, thresholdAdvisoryValue, thresholdCautionValue, thresholdWarningValue, thresholdFailedValue) && saveAssetType(assembleAssetType())) {
                 uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, saveBtn.getScene());
             }
         });

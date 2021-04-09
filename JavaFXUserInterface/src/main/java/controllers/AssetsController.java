@@ -63,7 +63,7 @@ public class AssetsController extends Controller implements Initializable {
     private static final String DESCRIPTION_COL = "Description";
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
-    private AssetDAOImpl assetDAOImpl;
+    private final AssetDAOImpl assetDAOImpl;
     private final TableView<Asset> table;
     private final HashMap<String, Boolean> assetTypeFilterCondition;
     private final HashMap<String, Boolean> thresholdFilterCondition;
@@ -92,7 +92,6 @@ public class AssetsController extends Controller implements Initializable {
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private ObservableList<Asset> searchedAssets;
-    private PauseTransition delaySearch;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -216,7 +215,7 @@ public class AssetsController extends Controller implements Initializable {
         int i = 1;
         CheckBox option;
         Label assetTypeTitle = new Label("Asset Type");
-        navList.add(assetTypeTitle,0,0);
+        navList.add(assetTypeTitle, 0, 0);
         for (AssetType assetType : assetTypeDAO.getAssetTypeList()) {
             assetTypeFilterCondition.put(assetType.getName(), false);
             option = new CheckBox(assetType.getName());
@@ -228,7 +227,7 @@ public class AssetsController extends Controller implements Initializable {
             i++;
         }
         Label thresholdTitle = new Label("Threshold");
-        navList.add(thresholdTitle,1,0);
+        navList.add(thresholdTitle, 1, 0);
         for (ThresholdEnum thresholdEnum : ThresholdEnum.values()) {
             thresholdFilterCondition.put(thresholdEnum.getValue(), false);
             option = new CheckBox(thresholdEnum.getValue());
@@ -236,7 +235,7 @@ public class AssetsController extends Controller implements Initializable {
                 thresholdFilterCondition.replace(thresholdEnum.getValue(), newValue);
                 generateContent();
             });
-            navList.add(option, 1, ThresholdEnum.valueOf(thresholdEnum.name()).ordinal()+1);
+            navList.add(option, 1, ThresholdEnum.valueOf(thresholdEnum.name()).ordinal() + 1);
             i++;
         }
 
@@ -280,7 +279,8 @@ public class AssetsController extends Controller implements Initializable {
         return assetsToDisplay;
     }
 
-    /** regenerate the thumbnail or list view as selected
+    /**
+     * regenerate the thumbnail or list view as selected
      *
      * @author Paul
      */
@@ -357,7 +357,7 @@ public class AssetsController extends Controller implements Initializable {
      */
     private void searchAssets() {
         searchedAssets = FXCollections.observableArrayList();
-        delaySearch = new PauseTransition(Duration.seconds(0.25));
+        PauseTransition delaySearch = new PauseTransition(Duration.seconds(0.25));
         search.textProperty().addListener((observable, oldValue, newValue) -> {
             delaySearch.setOnFinished(event -> {
                 searchedAssets.clear();
@@ -504,10 +504,10 @@ public class AssetsController extends Controller implements Initializable {
     }
 
     private void setImage(Asset asset, BorderPane borderPane) {
-        ImageView imageView = null;
+        ImageView imageView;
         Image image;
 
-        if (asset.getImageId() != 0){
+        if (asset.getImageId() != 0) {
             image = assetDAOImpl.findImageById(asset.getImageId());
 
         } else {
@@ -557,6 +557,7 @@ public class AssetsController extends Controller implements Initializable {
         recommendationCol.setCellValueFactory(
                 new PropertyValueFactory<>("recommendation"));
         recommendationCol.setCellFactory(column -> new TableCell<>() {
+            @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
 

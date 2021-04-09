@@ -110,11 +110,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         Image image = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_IMAGE_BY_ID)) {
             ps.setInt(1, imageId);
-            ResultSet resultSet = ps.executeQuery();
-            if(resultSet.first()) {
-                Blob blob = resultSet.getBlob(1);
-                InputStream inputStream = blob.getBinaryStream();
-                image = new Image(inputStream);
+            try (ResultSet resultSet = ps.executeQuery()) {
+                if (resultSet.first()) {
+                    Blob blob = resultSet.getBlob(1);
+                    InputStream inputStream = blob.getBinaryStream();
+                    image = new Image(inputStream);
+                }
             }
         } catch (SQLException e) {
             logger.error("Exception in findImageById(): ", e);
@@ -134,9 +135,10 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         int imageId = 0;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_IMAGE_BY_NAME)) {
             ps.setString(1, name);
-            ResultSet resultSet = ps.executeQuery();
-            if(resultSet.first()) {
-                imageId = resultSet.getInt("imageId");
+            try (ResultSet resultSet = ps.executeQuery()) {
+                if (resultSet.first()) {
+                    imageId = resultSet.getInt("imageId");
+                }
             }
         } catch (SQLException e) {
             logger.error("Exception in findImageIdByName(): ", e);

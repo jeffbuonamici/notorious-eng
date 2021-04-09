@@ -66,7 +66,7 @@ public class CustomDialog extends Stage {
         setScene(new Scene(rootPane, null));
     }
 
-    public static void DeleteAssetTypeConfirmationDialogShowAndWait(String assetTypeID, Scene scene) {
+    public static void deleteAssetTypeConfirmationDialogShowAndWait(String assetTypeID, Scene scene) {
         CustomDialog dialog = new CustomDialog(DELETE_ASSET_TYPE_DIALOG_HEADER, DELETE_ASSET_TYPE_DIALOG_CONTENT);
         AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
 

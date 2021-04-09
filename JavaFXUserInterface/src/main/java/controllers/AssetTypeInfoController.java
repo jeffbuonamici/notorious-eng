@@ -36,10 +36,12 @@ import utilities.*;
 import java.net.URL;
 import java.util.*;
 
+import static utilities.FormInputValidation.assetTypeFormInputValidation;
 import static utilities.TextConstants.*;
 
 public class AssetTypeInfoController extends Controller implements Initializable {
     private static final String RMSE = "RMSE";
+    private static final String PARAM_TEXT_FIELD = "paramTextField";
     static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
     private final ModelPanes modelPanes = new ModelPanes();
     int trainSize = 0;
@@ -164,11 +166,11 @@ public class AssetTypeInfoController extends Controller implements Initializable
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
 
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene()));
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.deleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene()));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
-            if (FormInputValidation.assetTypeFormInputValidation(assetTypeInformationAnchorPane, assetTypeName, assetTypeDescription, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed)) {
+            if (assetTypeFormInputValidation(assetTypeInformationAnchorPane, assetTypeName, assetTypeDescription, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed)) {
                 assetTypeDAO.updateAssetType(assetType.toAssetType());
                 uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene());
                 backBtn.fire();
@@ -505,34 +507,34 @@ public class AssetTypeInfoController extends Controller implements Initializable
                 checkBox.setSelected(((BoolParameter) parameter).getBoolValue());
                 checkBox.setLayoutX(tfLayoutX);
                 checkBox.setLayoutY(0.0);
-                checkBox.selectedProperty().addListener((ov, old_val, new_val) -> ((BoolParameter) params.get(paramName)).setBoolValue(new_val));
+                checkBox.selectedProperty().addListener((ov, oldVal, newVal) -> ((BoolParameter) params.get(paramName)).setBoolValue(newVal));
                 pane.getChildren().addAll(checkBox);
             } else if (parameter instanceof IntParameter) {
                 TextField tf = new TextField();
                 tf.setText(String.valueOf(((IntParameter) parameter).getIntValue()));
-                tf.getStyleClass().add("paramTextField");
+                tf.getStyleClass().add(PARAM_TEXT_FIELD);
                 tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
-                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(intRegex, c)));
-                tf.textProperty().addListener((ov, old_val, new_val) -> ((IntParameter) params.get(paramName)).setIntValue(Integer.parseInt(new_val)));
+                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(INT_REGEX, c)));
+                tf.textProperty().addListener((ov, oldVal, newVal) -> ((IntParameter) params.get(paramName)).setIntValue(Integer.parseInt(newVal)));
                 pane.getChildren().add(tf);
             } else if (parameter instanceof ListParameter) {
                 ChoiceBox<String> listBox = new ChoiceBox<>();
                 listBox.setItems(FXCollections.observableArrayList(((ListParameter) parameter).getListValues()));
                 listBox.setValue(((ListParameter) parameter).getSelectedValue());
-                listBox.getStyleClass().add("paramTextField");
+                listBox.getStyleClass().add(PARAM_TEXT_FIELD);
                 listBox.setLayoutX(tfLayoutX);
                 listBox.setLayoutY(0.0);
-                listBox.getSelectionModel().selectedItemProperty().addListener((ov, old_val, new_val) -> ((ListParameter) params.get(paramName)).setSelectedValue(new_val));
+                listBox.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> ((ListParameter) params.get(paramName)).setSelectedValue(newVal));
                 pane.getChildren().add(listBox);
             } else if (parameter instanceof FloatParameter) {
                 TextField tf = new TextField();
                 tf.setText(String.valueOf(((FloatParameter) parameter).getFloatValue()));
-                tf.getStyleClass().add("paramTextField");
+                tf.getStyleClass().add(PARAM_TEXT_FIELD);
                 tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
-                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(floatRegex, c)));
-                tf.textProperty().addListener((ov, old_val, new_val) -> ((FloatParameter) params.get(paramName)).setFloatValue(Float.parseFloat(new_val)));
+                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(FLOAT_REGEX, c)));
+                tf.textProperty().addListener((ov, oldVal, newVal) -> ((FloatParameter) params.get(paramName)).setFloatValue(Float.parseFloat(newVal)));
                 pane.getChildren().add(tf);
             }
             modelParameters.getChildren().add(pane);

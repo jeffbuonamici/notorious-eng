@@ -25,7 +25,6 @@ import javafx.util.StringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utilities.CustomDialog;
-import utilities.FormInputValidation;
 import utilities.UIUtilities;
 
 import java.io.File;
@@ -34,10 +33,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static utilities.FormInputValidation.assetFormInputValidation;
 import static utilities.TextConstants.ASSETS_SCENE;
 
 public class AddAssetController extends Controller implements Initializable {
 
+    FileInputStream fileInputStream = null;
+    Logger logger = LoggerFactory.getLogger(AddAssetController.class);
     @FXML
     private Button uploadBtn;
     @FXML
@@ -72,10 +74,7 @@ public class AddAssetController extends Controller implements Initializable {
     private AssetType selectedAssetType;
     private String imageName = "";
     private boolean overrideImage = false;
-    FileInputStream fileInputStream = null;
     private int imageId = 0;
-
-    Logger logger = LoggerFactory.getLogger(AddAssetController.class);
 
     /**
      * Initialize runs before the scene is displayed.
@@ -109,13 +108,13 @@ public class AddAssetController extends Controller implements Initializable {
         saveBtn.setOnMouseClicked(mouseEvent -> {
             imageValidation();
             Asset newAsset = assembleAsset();
-            if (FormInputValidation.assetFormInputValidation(addAssetInformationAnchorPane, assetNameInput, assetDescriptionInput, serialNumberInput, manufacturerInput, categoryInput, siteInput, locationInput) && !isAssetEmpty(newAsset)) {
+            if (assetFormInputValidation(addAssetInformationAnchorPane, assetNameInput, assetDescriptionInput, serialNumberInput, manufacturerInput, categoryInput, siteInput, locationInput) && !isAssetEmpty(newAsset)) {
                 saveAsset(newAsset);
                 CustomDialog.saveNewAssetInformationDialogShowAndWait();
             }
         });
 
-        uploadBtn.setOnAction(e-> openImageFile());
+        uploadBtn.setOnAction(e -> openImageFile());
 
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSETS_SCENE, backBtn.getScene()));
@@ -173,7 +172,7 @@ public class AddAssetController extends Controller implements Initializable {
         }
 
         //Case 2: User selected an image that already exists
-        if(imageId != 0) {
+        if (imageId != 0) {
             newAsset.setImageId(imageId);
         }
     }
@@ -210,14 +209,14 @@ public class AddAssetController extends Controller implements Initializable {
         configureFileChooser(fileChooser);
         File file = fileChooser.showOpenDialog(uploadBtn.getScene().getWindow());
 
-        if (file!=null) {
+        if (file != null) {
             try {
                 fileInputStream = new FileInputStream(file);
                 imageName = file.getName();
                 Image image = new Image(fileInputStream);
                 imageView.setImage(image);
             } catch (IOException e) {
-                logger.error("openImageFile() : " , e);
+                logger.error("openImageFile() : ", e);
             }
         }
     }
@@ -227,7 +226,7 @@ public class AddAssetController extends Controller implements Initializable {
         overrideImage = true;
     }
 
-    private void configureFileChooser(FileChooser fileChooser){
+    private void configureFileChooser(FileChooser fileChooser) {
         fileChooser.setTitle("View Images");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All Images", "*.*"),

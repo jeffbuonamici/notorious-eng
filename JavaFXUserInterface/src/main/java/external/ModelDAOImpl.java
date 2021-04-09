@@ -27,6 +27,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model tm, model m SET tm.model_id = ?, tm.serialized_model =?  WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model tm, model m SET retrain = true WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? AND trained_model.status_id = ? AND model.archived = 0";
+    private static final String SERIALIZED_MODEL = "serialized_model";
 
     public static String convertToByteString(Object object) throws IOException {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); ObjectOutput out = new ObjectOutputStream(bos)) {
@@ -170,8 +171,8 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(3, Constants.STATUS_EVALUATION);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    if (rs.getString("serialized_model") != null)
-                        modelStrategy = (ModelStrategy) convertFromByteString(rs.getString("serialized_model"));
+                    if (rs.getString(SERIALIZED_MODEL) != null)
+                        modelStrategy = (ModelStrategy) convertFromByteString(rs.getString(SERIALIZED_MODEL));
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -249,8 +250,8 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         tm.setRetrain(rs.getBoolean("retrain"));
         tm.setStatusID(rs.getInt("status_id"));
         try {
-            if (rs.getString("serialized_model") != null)
-                tm.setModelStrategy((ModelStrategy) convertFromByteString(rs.getString("serialized_model")));
+            if (rs.getString(SERIALIZED_MODEL) != null)
+                tm.setModelStrategy((ModelStrategy) convertFromByteString(rs.getString(SERIALIZED_MODEL)));
 
         } catch (IOException | ClassNotFoundException e) {
             logger.error("Exception createTrainedModelFromResultSet(): ", e);
